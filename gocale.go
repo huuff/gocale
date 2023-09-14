@@ -25,7 +25,6 @@ type LocalizerConfig struct {
   path string
 }
 
-// TODO: Finish this
 func NewLocalizer(config LocalizerConfig) Localizer {
   defaultLocale := defaults.DefaultPtr(config.defaultLocale, &language.English)
   enabledLocales := defaults.DefaultPtr[[]string](&config.enabledLocales, &[]string { defaultLocale.String() } )
