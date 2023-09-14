@@ -19,20 +19,20 @@ type Localizer struct {
 }
 
 type LocalizerConfig struct {
-  defaultLocale *language.Tag
-  encoding *LocaleEncoding 
-  enabledLocales []string
-  path string
+  DefaultLocale *language.Tag
+  Encoding *LocaleEncoding 
+  EnabledLocales []string
+  Path string
 }
 
 func NewLocalizer(config LocalizerConfig) Localizer {
-  defaultLocale := defaults.DefaultPtr(config.defaultLocale, &language.English)
-  enabledLocales := defaults.DefaultPtr[[]string](&config.enabledLocales, &[]string { defaultLocale.String() } )
+  defaultLocale := defaults.DefaultPtr(config.DefaultLocale, &language.English)
+  enabledLocales := defaults.DefaultPtr[[]string](&config.EnabledLocales, &[]string { defaultLocale.String() } )
 
   bundle := i18n.NewBundle(*defaultLocale)
   bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
 
-  path := defaults.DefaultString(config.path, "/translations")
+  path := defaults.DefaultString(config.Path, "/translations")
   for _, lang := range *enabledLocales {
     bundle.MustLoadMessageFile(fmt.Sprintf("%s/%s.json", path, lang))
   }
