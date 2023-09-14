@@ -1,4 +1,4 @@
-module haff.xyz/gocale
+module github.com/huuff/gocale
 
 go 1.20
 
