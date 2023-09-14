@@ -13,13 +13,13 @@ func TestEnglishAndSpanish(t *testing.T) {
   }) 
 
   key := "test"
-  englishTranslation, err := localizer.Get(key, "en")
+  englishTranslation, err := localizer.Translate(key, "en")
 
   if err != nil {
     t.Errorf("Error translating %s for en: %v", key, err)
   }
 
-  spanishTranslation, err := localizer.Get(key, "es")
+  spanishTranslation, err := localizer.Translate(key, "es")
 
   if err != nil {
     t.Errorf("Error translating %s for en: %v", key, err)

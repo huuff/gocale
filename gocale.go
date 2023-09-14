@@ -40,7 +40,7 @@ func NewLocalizer(config LocalizerConfig) Localizer {
   return Localizer { bundle }
 }
 
-func (l Localizer) Get(id, lang string) (string, error) {
+func (l Localizer) Translate(id, lang string) (string, error) {
   localizer := i18n.NewLocalizer(l.bundle, lang)
 
   cfg := &i18n.LocalizeConfig {
@@ -58,3 +58,4 @@ func (l Localizer) Get(id, lang string) (string, error) {
 
   return str, nil
 }
+
