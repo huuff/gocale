@@ -1,9 +1,12 @@
 package gocale
 
 import (
-  "encoding/json"
-  "github.com/nicksnyder/go-i18n/v2/i18n"
-  "golang.org/x/text/language"
+	"encoding/json"
+	"fmt"
+
+	"github.com/huuff/go-defaults"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
+	"golang.org/x/text/language"
 )
 
 type LocaleEncoding int
@@ -19,16 +22,40 @@ type LocalizerConfig struct {
   defaultLocale *language.Tag
   encoding *LocaleEncoding 
   enabledLocales []string
+  path string
 }
 
 // TODO: Finish this
 func NewLocalizer(config LocalizerConfig) Localizer {
-  bundle := i18n.NewBundle(*config.defaultLocale)
+  defaultLocale := defaults.DefaultPtr(config.defaultLocale, &language.English)
+  enabledLocales := defaults.DefaultPtr[[]string](&config.enabledLocales, &[]string { defaultLocale.String() } )
+
+  bundle := i18n.NewBundle(*defaultLocale)
   bundle.RegisterUnmarshalFunc("json", json.Unmarshal)
 
-  //for _, lang := range languages {
-    
-  //}
+  path := defaults.DefaultString(config.path, "/translations")
+  for _, lang := range *enabledLocales {
+    bundle.MustLoadMessageFile(fmt.Sprintf("%s/%s.json", path, lang))
+  }
 
   return Localizer { bundle }
+}
+
+func (l Localizer) Get(id, lang string) (string, error) {
+  localizer := i18n.NewLocalizer(l.bundle, lang)
+
+  cfg := &i18n.LocalizeConfig {
+    DefaultMessage: &i18n.Message {
+      ID: id,
+      Other: id,
+      One: id,
+    },
+  }
+
+  str, err := localizer.Localize(cfg)
+  if err != nil {
+    return id, err
+  }
+
+  return str, nil
 }
