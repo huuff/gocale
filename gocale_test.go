@@ -7,9 +7,9 @@ import (
 
 func TestEnglishAndSpanish(t *testing.T) {
   localizer := NewLocalizer(LocalizerConfig {
-    defaultLocale: &language.English,
-    enabledLocales: []string { "es", "en" },
-    path: "test_translations",
+    DefaultLocale: &language.English,
+    EnabledLocales: []string { "es", "en" },
+    Path: "test_translations",
   }) 
 
   key := "test"
