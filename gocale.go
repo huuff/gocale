@@ -59,3 +59,18 @@ func (l Localizer) Translate(id, lang string) (string, error) {
   return str, nil
 }
 
+func (l Localizer) TranslateAll(ids []string, lang string) (map[string]string, error) {
+  results := make(map[string]string) 
+
+  for _, id := range ids {
+    translation, err := l.Translate(id, lang)
+
+    if err != nil {
+      return nil, err
+    }
+
+    results[id] = translation
+  }
+
+  return results, nil
+}
