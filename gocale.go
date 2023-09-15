@@ -7,6 +7,7 @@ import (
 	"github.com/huuff/go-defaults"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
+  "embed"
 )
 
 type LocaleEncoding int
@@ -23,9 +24,11 @@ type LocalizerConfig struct {
   Encoding *LocaleEncoding 
   EnabledLocales []string
   Path string
+  EmbeddedFS *embed.FS
 }
 
 func NewLocalizer(config LocalizerConfig) Localizer {
+
   defaultLocale := defaults.DefaultPtr(config.DefaultLocale, &language.English)
   enabledLocales := defaults.DefaultPtr[[]string](&config.EnabledLocales, &[]string { defaultLocale.String() } )
 
@@ -34,7 +37,11 @@ func NewLocalizer(config LocalizerConfig) Localizer {
 
   path := defaults.DefaultString(config.Path, "/translations")
   for _, lang := range *enabledLocales {
-    bundle.MustLoadMessageFile(fmt.Sprintf("%s/%s.json", path, lang))
+    if config.EmbeddedFS != nil {
+      bundle.LoadMessageFileFS(config.EmbeddedFS, fmt.Sprintf("%s/%s.json", path, lang))
+    } else {
+      bundle.MustLoadMessageFile(fmt.Sprintf("%s/%s.json", path, lang))
+    } 
   }
 
   return Localizer { bundle }
